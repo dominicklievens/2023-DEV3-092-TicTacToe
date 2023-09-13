@@ -19,6 +19,9 @@ import static org.junit.jupiter.api.Assertions.*;
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 class GameControllerTest {
 
+    private final static String JSON_DEFAULT_STATE = "{\"tiles\":[[null,null,null],[null,null,null],[null,null,null]],\"gameState\":null,\"finished\":false,\"currentPlayer\":\"x\"}";
+    private final static String JSON_AFTER_MOVE = "{\"tiles\":[[null,null,null],[null,null,null],[null,null,null]],\"gameState\":null,\"finished\":false,\"currentPlayer\":\"x\"}";
+    private final static String JSON_INVALID = "{\"message\":\"This tileNumber is invalid: 5\"}";
     @Autowired
     private MockMvc mvc;
 
@@ -27,9 +30,7 @@ class GameControllerTest {
         RequestBuilder request = MockMvcRequestBuilders.get("/api/game/state");
         MvcResult result = mvc.perform(request).andReturn();
 
-        String expected = "{\"tiles\":[[null,null,null],[null,null,null],[null,null,null]],\"gameState\":null,\"finished\":false,\"currentPlayer\":\"x\"}";
-
-        assertEquals(expected, result.getResponse().getContentAsString());
+        assertEquals(JSON_DEFAULT_STATE, result.getResponse().getContentAsString());
     }
 
     @Test
@@ -39,9 +40,7 @@ class GameControllerTest {
                 .content("5");
         MvcResult result = mvc.perform(request).andReturn();
 
-        String expected = "{\"tiles\":[[null,null,null],[null,\"x\",null],[null,null,null]],\"gameState\":null,\"finished\":false,\"currentPlayer\":\"o\"}";
-
-        assertEquals(expected, result.getResponse().getContentAsString());
+        assertEquals(JSON_AFTER_MOVE, result.getResponse().getContentAsString());
     }
 
     @Test
@@ -58,8 +57,19 @@ class GameControllerTest {
                 .content("5");
         MvcResult invalidResult = mvc.perform(invalidRequest).andReturn();
 
-        String expected = "{\"message\":\"This tileNumber is invalid: 5\"}";
+        assertEquals(JSON_INVALID, invalidResult.getResponse().getContentAsString());
+    }
 
-        assertEquals(expected, invalidResult.getResponse().getContentAsString());
+    @Test
+    void resetGame() throws Exception {
+        RequestBuilder request = MockMvcRequestBuilders.post("/api/game/make-move")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("6");
+        mvc.perform(request).andReturn();
+
+        RequestBuilder resetRequest = MockMvcRequestBuilders.post("/api/game/reset");
+        MvcResult resetResult = mvc.perform(resetRequest).andReturn();
+
+        assertEquals(JSON_DEFAULT_STATE, resetResult.getResponse().getContentAsString());
     }
 }
