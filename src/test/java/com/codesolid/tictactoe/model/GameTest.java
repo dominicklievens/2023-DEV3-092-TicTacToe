@@ -28,26 +28,40 @@ class GameTest {
     }
 
     @Test
+    void validMove() {
+        var game = new Game();
+
+        // Every move between from 1 to 9 should be valid in a new game
+        for (int i = 1; i < 10; i++) {
+            assertTrue(game.validMove(i));
+        }
+
+        // If tile is already filled, the move is not valid
+        game.makeMove(1);
+        assertFalse(game.validMove(1));
+    }
+
+    @Test
     void determinePlayersTurn() {
         var game = new Game();
 
         // First move is always X
-        assertEquals("x", game.determinePlayersTurn());
+        assertEquals("x", game.getCurrentPlayer());
 
         game.makeMove(1);
-        assertEquals("o", game.determinePlayersTurn());
+        assertEquals("o", game.getCurrentPlayer());
 
         game.makeMove(2);
-        assertEquals("x", game.determinePlayersTurn());
+        assertEquals("x", game.getCurrentPlayer());
 
         game.makeMove(3);
-        assertEquals("o", game.determinePlayersTurn());
+        assertEquals("o", game.getCurrentPlayer());
 
         game.makeMove(4);
-        assertEquals("x", game.determinePlayersTurn());
+        assertEquals("x", game.getCurrentPlayer());
 
         game.makeMove(5);
-        assertEquals("o", game.determinePlayersTurn());
+        assertEquals("o", game.getCurrentPlayer());
     }
 
     @Test
