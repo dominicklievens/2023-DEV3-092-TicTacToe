@@ -33,6 +33,12 @@ public class GameController {
         return ResponseEntity.ok(game);
     }
 
+    @PostMapping("/reset")
+    public ResponseEntity<Game> rest() {
+        game.reset();
+        return ResponseEntity.ok(game);
+    }
+
     @ExceptionHandler(InvalidMoveException.class)
     public ResponseEntity<Map<String, String>> handleInvalidMoveException(InvalidMoveException e) {
         Map<String, String> errorResponse = new HashMap<>();
