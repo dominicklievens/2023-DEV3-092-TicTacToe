@@ -5,6 +5,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.MediaType;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -15,6 +16,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(SpringExtension.class)
 @WebMvcTest(GameController.class)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 class GameControllerTest {
 
     @Autowired
@@ -25,7 +27,7 @@ class GameControllerTest {
         RequestBuilder request = MockMvcRequestBuilders.get("/api/game/state");
         MvcResult result = mvc.perform(request).andReturn();
 
-        String expected = "{\"tiles\":[[null,null,null],[null,null,null],[null,null,null]],\"currentPlayer\":\"x\"}";
+        String expected = "{\"tiles\":[[null,null,null],[null,null,null],[null,null,null]],\"gameState\":null,\"finished\":false,\"currentPlayer\":\"x\"}";
 
         assertEquals(expected, result.getResponse().getContentAsString());
     }
@@ -37,7 +39,7 @@ class GameControllerTest {
                 .content("5");
         MvcResult result = mvc.perform(request).andReturn();
 
-        String expected = "{\"tiles\":[[null,null,null],[null,\"x\",null],[null,null,null]],\"currentPlayer\":\"o\"}";
+        String expected = "{\"tiles\":[[null,null,null],[null,\"x\",null],[null,null,null]],\"gameState\":null,\"finished\":false,\"currentPlayer\":\"o\"}";
 
         assertEquals(expected, result.getResponse().getContentAsString());
     }

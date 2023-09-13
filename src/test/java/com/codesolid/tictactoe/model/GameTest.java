@@ -68,10 +68,95 @@ class GameTest {
     void isWinningMove() {
         var game = new Game();
 
-        game.makeMove(1);
-        game.makeMove(4);
-        game.makeMove(7);
+        //    x | o | o
+        //    ---------
+        //    x |   |
+        //    ---------
+        //    x |   |
+        game.makeMove(1); // x
+        game.makeMove(2); // o
+        game.makeMove(4); // x
+        game.makeMove(3); // o
+        game.makeMove(7); // x
+        assertTrue(game.isFinished());
+        assertEquals("Winner is x", game.getGameState());
 
-        // TODO: Test this
+        game.reset();
+
+        //    x | x | x
+        //    ---------
+        //    o |   |
+        //    ---------
+        //    o |   |
+        game.makeMove(1); // x
+        game.makeMove(4); // o
+        game.makeMove(2); // x
+        game.makeMove(7); // o
+        game.makeMove(3); // x
+        assertTrue(game.isFinished());
+        assertEquals("Winner is x", game.getGameState());
+
+        game.reset();
+
+        // Column with x o x would not finish the game
+        //    x | o | x
+        //    ---------
+        //      |   |
+        //    ---------
+        //      |   |
+        game.makeMove(1); // x
+        game.makeMove(4); // o
+        game.makeMove(7); // x
+        assertFalse(game.isFinished());
+        assertNull(game.getGameState());
+
+        game.reset();
+
+        //    x | x | o
+        //    ---------
+        //    o | x |
+        //    ---------
+        //    o | o | x
+        game.makeMove(1); // x
+        game.makeMove(4); // o
+        game.makeMove(2); // x
+        game.makeMove(7); // o
+        game.makeMove(5); // x
+        game.makeMove(8); // o
+        game.makeMove(9); // x
+        assertTrue(game.isFinished());
+        assertEquals("Winner is x", game.getGameState());
+
+        game.reset();
+
+        //    x | x | o
+        //    ---------
+        //    x | o |
+        //    ---------
+        //    o | o | x
+        game.makeMove(1); // x
+        game.makeMove(3); // o
+        game.makeMove(2); // x
+        game.makeMove(7); // o
+        game.makeMove(4); // x
+        game.makeMove(5); // o
+        assertTrue(game.isFinished());
+        assertEquals("Winner is o", game.getGameState());
+    }
+
+    @Test
+    void verifyDraw() {
+        var game = new Game();
+        game.makeMove(2); // x
+        game.makeMove(1); // o
+        game.makeMove(3); // x
+        game.makeMove(4); // o
+        game.makeMove(5); // x
+        game.makeMove(6); // o
+        game.makeMove(7); // x
+        game.makeMove(8); // o
+        game.makeMove(9); // x
+        assertTrue(game.isFinished());
+        assertEquals("It's a draw!!", game.getGameState());
     }
 }
