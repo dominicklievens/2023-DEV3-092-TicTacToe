@@ -144,17 +144,22 @@ class GameTest {
         assertEquals("Winner is o", game.getGameState());
     }
 
+    //    o | x | x
+    //    ---------
+    //    x | o | o
+    //    ---------
+    //    o | x | x
     @Test
     void verifyDraw() {
         var game = new Game();
+        game.makeMove(8); // x
+        game.makeMove(6); // o
         game.makeMove(2); // x
         game.makeMove(1); // o
+        game.makeMove(4); // x
+        game.makeMove(5); // o
         game.makeMove(3); // x
-        game.makeMove(4); // o
-        game.makeMove(5); // x
-        game.makeMove(6); // o
-        game.makeMove(7); // x
-        game.makeMove(8); // o
+        game.makeMove(7); // o
         game.makeMove(9); // x
         assertTrue(game.isFinished());
         assertEquals("It's a draw!!", game.getGameState());

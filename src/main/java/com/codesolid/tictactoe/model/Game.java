@@ -1,5 +1,7 @@
 package com.codesolid.tictactoe.model;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.util.Objects;
 import java.util.stream.Stream;
 
@@ -15,26 +17,28 @@ public class Game {
     }
 
     public void makeMove(int index) {
-        for (int i = 0; i < tiles.length; i++) {
-            for (int j = 0; j < tiles[i].length; j++) {
-                if (i * 3 + j == index - 1) {
-                    tiles[i][j] = getCurrentPlayer();
-                    isGameFinished();
-                    return;
-                }
-            }
-        }
+        // Expect number between 1 and 9
+        // Arrays start at index 0, so subtract 1
+        index--;
+        int y = index / 3;
+        int x = index % 3;
+
+        tiles[y][x] = getCurrentPlayer();
+        isGameFinished();
     }
 
     public boolean validMove(int index) {
-        for (int i = 0; i < tiles.length; i++) {
-            for (int j = 0; j < tiles[i].length; j++) {
-                if (i * 3 + j == index - 1) {
-                    return isBlank(tiles[i][j]);
-                }
-            }
+        // Expect number between 1 and 9
+        if (index < 1 || index > 9) {
+            return false;
         }
-        return false;
+
+        // Arrays start at index 0, so subtract 1
+        index--;
+        int y = index / 3;
+        int x = index % 3;
+
+        return isBlank(tiles[y][x]);
     }
 
     public void reset() {
@@ -47,41 +51,32 @@ public class Game {
         // Check rows
         for (int i = 0; i < 3; i++) {
             if (tiles[i][0] != null && tiles[i][0].equals(tiles[i][1]) && tiles[i][0].equals(tiles[i][2])) {
-                gameState = String.format("Winner is %s", tiles[i][0]);
+                gameState = "Winner is %s".formatted(tiles[i][0]);
+                finished = true;
+                return;
+            }
+            // Check columns
+            if (tiles[0][i] != null && tiles[0][i].equals(tiles[1][i]) && tiles[0][i].equals(tiles[2][i])) {
+                gameState = "Winner is %s".formatted(tiles[0][i]);
                 finished = true;
                 return;
             }
         }
-        // Check columns
-        for (int j = 0; j < 3; j++) {
-            if (tiles[0][j] != null && tiles[0][j].equals(tiles[1][j]) && tiles[0][j].equals(tiles[2][j])) {
-                gameState = String.format("Winner is %s", tiles[0][j]);
-                finished = true;
-                return;
-            }
-        }
+
         // Check diagonals
         if (tiles[0][0] != null && tiles[0][0].equals(tiles[1][1]) && tiles[0][0].equals(tiles[2][2])) {
-            gameState = String.format("Winner is %s", tiles[0][0]);
+            gameState = "Winner is %s".formatted(tiles[0][0]);
             finished = true;
             return;
         }
         if (tiles[0][2] != null && tiles[0][2].equals(tiles[1][1]) && tiles[0][2].equals(tiles[2][0])) {
-            gameState = String.format("Winner is %s", tiles[0][2]);
+            gameState = "Winner is %s".formatted(tiles[0][2]);
             finished = true;
+            return;
         }
 
         // Check for a draw (no moves left)
-        boolean draw = true;
-        for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 3; j++) {
-                if (isBlank(tiles[i][j])) {
-                    draw = false;
-                    break;
-                }
-            }
-        }
-        if (draw) {
+        if (Stream.of(tiles).flatMap(Stream::of).noneMatch(StringUtils::isBlank)) {
             finished = true;
             gameState = "It's a draw!!";
         }
