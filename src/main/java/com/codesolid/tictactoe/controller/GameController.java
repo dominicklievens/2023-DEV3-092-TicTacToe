@@ -2,6 +2,8 @@ package com.codesolid.tictactoe.controller;
 
 import com.codesolid.tictactoe.exceptions.InvalidMoveException;
 import com.codesolid.tictactoe.model.Game;
+import com.codesolid.tictactoe.model.GameRecord;
+import com.codesolid.tictactoe.service.GameRecordService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -9,6 +11,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -16,9 +20,11 @@ import java.util.Map;
 public class GameController {
 
     private final Game game;
+    private final GameRecordService gameRecordService;
 
-    public GameController(Game game) {
+    public GameController(Game game, GameRecordService gameRecordService) {
         this.game = game;
+        this.gameRecordService = gameRecordService;
     }
 
     @Operation(summary = "Get game state", responses = {
@@ -45,6 +51,16 @@ public class GameController {
         }
 
         game.makeMove(tileNumber);
+
+        if (game.isFinished()) {
+            gameRecordService.create(new GameRecord(
+                    game.getGameState(),
+                    game.getMoveCount(),
+                    LocalDateTime.now()
+            ));
+            game.reset();
+        }
+
         return ResponseEntity.ok(game);
     }
 
@@ -57,6 +73,16 @@ public class GameController {
     public ResponseEntity<Game> reset() {
         game.reset();
         return ResponseEntity.ok(game);
+    }
+
+    @Operation(summary = "Fetch all records", responses = {
+            @ApiResponse(responseCode = "200", description = "All records are successfully fetched",
+                    content = {@Content(mediaType = "application/json",
+                            schema = @Schema(implementation = GameRecord.class))})
+    })
+    @PostMapping("/records")
+    public ResponseEntity<List<GameRecord>> fetchGameRecords() {
+        return ResponseEntity.ok(gameRecordService.findAll());
     }
 
     @ExceptionHandler(InvalidMoveException.class)

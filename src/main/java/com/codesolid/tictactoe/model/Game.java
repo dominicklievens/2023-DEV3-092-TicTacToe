@@ -16,6 +16,18 @@ public class Game {
         this.tiles = new String[3][3];
     }
 
+    public String[][] getTiles() {
+        return tiles;
+    }
+
+    public String getGameState() {
+        return gameState;
+    }
+
+    public boolean isFinished() {
+        return finished;
+    }
+
     public void makeMove(int index) {
         // Expect number between 1 and 9
         // Arrays start at index 0, so subtract 1
@@ -45,6 +57,14 @@ public class Game {
         tiles = new String[3][3];
         finished = false;
         gameState = null;
+    }
+
+    public String getCurrentPlayer() {
+        return getMoveCount() % 2 == 0 ? "x" : "o";
+    }
+
+    public Integer getMoveCount() {
+        return (int) Stream.of(tiles).flatMap(Stream::of).filter(Objects::nonNull).count();
     }
 
     private void isGameFinished() {
@@ -80,22 +100,5 @@ public class Game {
             finished = true;
             gameState = "It's a draw!!";
         }
-    }
-
-    public String getCurrentPlayer() {
-        long count = Stream.of(tiles).flatMap(Stream::of).filter(Objects::nonNull).count();
-        return count % 2 == 0 ? "x" : "o";
-    }
-
-    public String[][] getTiles() {
-        return tiles;
-    }
-
-    public String getGameState() {
-        return gameState;
-    }
-
-    public boolean isFinished() {
-        return finished;
     }
 }

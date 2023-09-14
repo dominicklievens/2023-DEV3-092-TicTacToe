@@ -1,9 +1,11 @@
 package com.codesolid.tictactoe.controller;
 
+import com.codesolid.tictactoe.service.GameRecordService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -19,11 +21,15 @@ import static org.junit.jupiter.api.Assertions.*;
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 class GameControllerTest {
 
-    private final static String JSON_DEFAULT_STATE = "{\"tiles\":[[null,null,null],[null,null,null],[null,null,null]],\"gameState\":null,\"finished\":false,\"currentPlayer\":\"x\"}";
-    private final static String JSON_AFTER_MOVE = "{\"tiles\":[[null,null,null],[null,\"x\",null],[null,null,null]],\"gameState\":null,\"finished\":false,\"currentPlayer\":\"o\"}";
+    private final static String JSON_DEFAULT_STATE = "{\"tiles\":[[null,null,null],[null,null,null],[null,null,null]],\"gameState\":null,\"finished\":false,\"currentPlayer\":\"x\",\"moveCount\":0}";
+    private final static String JSON_AFTER_MOVE = "{\"tiles\":[[null,null,null],[null,\"x\",null],[null,null,null]],\"gameState\":null,\"finished\":false,\"currentPlayer\":\"o\",\"moveCount\":1}";
     private final static String JSON_INVALID = "{\"message\":\"This tileNumber is invalid: 5\"}";
+
     @Autowired
     private MockMvc mvc;
+
+    @MockBean
+    private GameRecordService gameRecordService;
 
     @Test
     void getGame() throws Exception {
