@@ -31,7 +31,7 @@ or if you want to use Postgres:
 ```shell
  ./mvnw clean install
 ```
-The properties for connection you can find in application.properties.
+You can find the properties for connection with Postgres in application.properties.
 
 ## Creator:
 - Dominick Lievens
