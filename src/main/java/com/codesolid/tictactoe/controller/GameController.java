@@ -58,7 +58,6 @@ public class GameController {
                     game.getMoveCount(),
                     LocalDateTime.now()
             ));
-            game.reset();
         }
 
         return ResponseEntity.ok(game);
@@ -80,7 +79,7 @@ public class GameController {
                     content = {@Content(mediaType = "application/json",
                             schema = @Schema(implementation = GameRecord.class))})
     })
-    @PostMapping("/records")
+    @GetMapping("/records")
     public ResponseEntity<List<GameRecord>> fetchGameRecords() {
         return ResponseEntity.ok(gameRecordService.findAll());
     }

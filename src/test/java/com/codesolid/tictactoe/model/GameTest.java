@@ -39,6 +39,9 @@ class GameTest {
         // If tile is already filled, the move is not valid
         game.makeMove(1);
         assertFalse(game.validMove(1));
+
+        assertFalse(game.validMove(0));
+        assertFalse(game.validMove(10));
     }
 
     @Test

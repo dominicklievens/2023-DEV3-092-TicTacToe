@@ -1,0 +1,28 @@
+version: "3.8"
+
+networks:
+  tictactoe:
+
+services:
+  api:
+    image: dlievens/tictactoe:latest
+    container_name: tictactoe-api
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/tictactoe
+    networks:
+      - tictactoe
+  postgres:
+    image: postgres:latest
+    container_name: tictactoe-postgres
+    environment:
+      POSTGRES_DB: tictactoe
+      POSTGRES_USER: tic
+      POSTGRES_PASSWORD: tac
+    ports:
+      - "5432:5432"
+    networks:
+      - tictactoe

@@ -11,6 +11,8 @@ public class Game {
     private String[][] tiles;
     private String gameState;
     private boolean finished;
+    private String currentPlayer;
+    private Integer moveCount;
 
     public Game() {
         this.tiles = new String[3][3];

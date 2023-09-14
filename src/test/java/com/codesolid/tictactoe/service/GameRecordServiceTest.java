@@ -37,7 +37,7 @@ class GameRecordServiceTest {
     void create() {
         String gameState = "Winner is x";
         Integer moveCount = 7;
-        LocalDateTime date = LocalDateTime.now();
+        LocalDateTime date = LocalDateTime.of(2023, 9, 14, 16, 28, 28);
 
         GameRecord gameRecord = new GameRecord(gameState, moveCount, date);
         gameRecordService.create(gameRecord);
